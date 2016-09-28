@@ -1,21 +1,24 @@
-package com.dat.android.moveviewontouchdemo;
+package com.dat.android.moveviewontouchdemo.Demo3;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
-import android.widget.FrameLayout;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import com.dat.android.moveviewontouchdemo.R;
 
-public class MainActivity extends AppCompatActivity implements OnTouchListener {
+public class Demo3Activity extends AppCompatActivity implements View.OnTouchListener {
 
     @Bind(R.id.root)
-    FrameLayout layout;
-    @Bind(R.id.textView)
-    TextView textView;
+    LinearLayout root;
+    @Bind(R.id.layout1)
+    LinearLayout layout1;
+    @Bind(R.id.layout2)
+    LinearLayout layout2;
+    @Bind(R.id.myViewItem)
+    View myViewItem;
 
     private int _xDelta;
     private int _yDelta;
@@ -28,14 +31,14 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener {
         final int Y = (int) event.getRawY();
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
-                FrameLayout.LayoutParams lParams =
-                    (FrameLayout.LayoutParams) textView.getLayoutParams();
+                LinearLayout.LayoutParams lParams =
+                    (LinearLayout.LayoutParams) myViewItem.getLayoutParams();
                 _xDelta = X - lParams.leftMargin;
                 _yDelta = Y - lParams.topMargin;
                 break;
             case MotionEvent.ACTION_UP:
-                FrameLayout.LayoutParams params =
-                    (FrameLayout.LayoutParams) textView.getLayoutParams();
+                LinearLayout.LayoutParams params =
+                    (LinearLayout.LayoutParams) myViewItem.getLayoutParams();
                 params.topMargin = initY;
                 params.leftMargin = initX;
                 v.setLayoutParams(params);
@@ -45,25 +48,27 @@ public class MainActivity extends AppCompatActivity implements OnTouchListener {
             case MotionEvent.ACTION_POINTER_UP:
                 break;
             case MotionEvent.ACTION_MOVE:
-                FrameLayout.LayoutParams layoutParams =
-                    (FrameLayout.LayoutParams) textView.getLayoutParams();
+                LinearLayout.LayoutParams layoutParams =
+                    (LinearLayout.LayoutParams) myViewItem.getLayoutParams();
                 layoutParams.leftMargin = X - _xDelta;
                 layoutParams.topMargin = Y - _yDelta;
-                textView.setLayoutParams(layoutParams);
+                myViewItem.setLayoutParams(layoutParams);
                 break;
         }
-        layout.invalidate();
+        root.invalidate();
+        layout1.invalidate();
+        layout2.invalidate();
         return true;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_move_view_demo2);
         ButterKnife.bind(this);
-        textView.setOnTouchListener(this);
-        FrameLayout.LayoutParams layoutParams =
-            (FrameLayout.LayoutParams) textView.getLayoutParams();
+        myViewItem.setOnTouchListener(this);
+        LinearLayout.LayoutParams layoutParams =
+            (LinearLayout.LayoutParams) myViewItem.getLayoutParams();
         initX = layoutParams.leftMargin;
         initY = layoutParams.topMargin;
     }
