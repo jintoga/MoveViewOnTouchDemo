@@ -10,14 +10,14 @@
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity" />
         <activity android:name=".DraggableRecyclerView.DraggableRecyclerViewDemoActivity" />
-        <activity android:name=".Demo3.Demo3Activity">
+        <activity android:name=".Demo3.Demo3Activity"></activity>
+        <activity android:name=".Demo4.Demo4Activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Demo4.Demo4Activity"></activity>
     </application>
 
 </manifest>

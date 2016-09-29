@@ -5,30 +5,11 @@
     android:layout_height="match_parent"
     tools:context="com.dat.android.moveviewontouchdemo.Demo4.Demo4Activity">
 
-    <LinearLayout
+    <com.dat.android.moveviewontouchdemo.Demo4.DragListView.BoardView
+        android:id="@+id/boardView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_margin="24dp"
-            android:layout_weight="1"
-            android:background="@color/colorAccent"
-            android:clipToPadding="false"
-            android:orientation="vertical" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView2"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_margin="24dp"
-            android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            android:clipToPadding="false"
-            android:orientation="vertical" />
-    </LinearLayout>
-
+        android:layout_gravity="center"
+        android:layout_marginBottom="24dp"
+        />
 </FrameLayout>
