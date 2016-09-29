@@ -8,7 +8,6 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.dat.android.moveviewontouchdemo.Demo4.DragListView.BoardView;
-import com.dat.android.moveviewontouchdemo.Demo4.DragListView.DragItemRecyclerView;
 import com.dat.android.moveviewontouchdemo.R;
 import java.util.ArrayList;
 
@@ -34,6 +33,7 @@ public class Demo4Activity extends AppCompatActivity {
             public void onItemDragStarted(int column, int row) {
                 /*Toast.makeText(boardView.getContext(), "Start - column: " + column + " row: " + row,
                     Toast.LENGTH_SHORT).show();*/
+                //Log.d("FFF", "Start - column: " + column + " row: " + row);
             }
 
             @Override
@@ -73,7 +73,6 @@ public class Demo4Activity extends AppCompatActivity {
         addColumnList(5);
     }
 
-
     private void addColumnList(int addItems) {
         final ArrayList<Pair<Long, String>> mItemArray = new ArrayList<>();
         for (int i = 0; i < addItems; i++) {
@@ -86,6 +85,8 @@ public class Demo4Activity extends AppCompatActivity {
         ((TextView) header.findViewById(R.id.text)).setText("Column " + (mColumns + 1));
         ((TextView) header.findViewById(R.id.item_count)).setText("" + addItems);
 
+        boardView.setCanNotDragBelowTopItem(true);
+        boardView.setCanNotDropBelowTopItem(true);
         boardView.addColumnList(listAdapter, header, false);
 
         mColumns++;

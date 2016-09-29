@@ -1,12 +1,12 @@
 /**
  * Copyright 2014 Magnus Woxblom
- * <p>
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
+ * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,6 +24,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -65,6 +66,17 @@ public class BoardView extends HorizontalScrollView implements AutoScroller.Auto
     private int mDragStartRow;
     private boolean mHasLaidOut;
     private boolean mDragEnabled = true;
+
+    //flags that allow to drag and drop only top item of each column
+    private boolean mCanNotDragBelowTopItem, mCanNotDropBelowTopItem;
+
+    public void setCanNotDragBelowTopItem(boolean mCanNotDragBelowTopItem) {
+        this.mCanNotDragBelowTopItem = mCanNotDragBelowTopItem;
+    }
+
+    public void setCanNotDropBelowTopItem(boolean mCanNotDropBelowTopItem) {
+        this.mCanNotDropBelowTopItem = mCanNotDropBelowTopItem;
+    }
 
     public BoardView(Context context) {
         super(context);
@@ -231,6 +243,31 @@ public class BoardView extends HorizontalScrollView implements AutoScroller.Auto
         }
     }
 
+    private boolean check() {
+        View child = mCurrentRecyclerView.findChildView(0, getListTouchY(mCurrentRecyclerView));
+        int pos;
+        if (child == null && mCurrentRecyclerView.getChildCount() > 0) {
+            // If child is null and child count is not 0 it means that an item was
+            // dragged below the last item in the list, then put it after that item
+            pos = mCurrentRecyclerView.getChildLayoutPosition(
+                mCurrentRecyclerView.getChildAt(mCurrentRecyclerView.getChildCount() - 1)) + 1;
+            Log.d("CC", "CC");
+        } else {
+            pos = mCurrentRecyclerView.getChildLayoutPosition(child);
+            Log.d("DD", "DD");
+        }
+
+        // If pos is NO_POSITION it means that the child has not been laid out yet,
+        // this only happens for pos 0 as far as I know
+        if (pos == -1) {
+            pos = 0;
+        }
+        if (pos < mCurrentRecyclerView.getAdapter().getItemCount() - 1) {
+            return false;
+        }
+        return true;
+    }
+
     private void updateScrollPosition() {
         // Updated event to scrollview coordinates
         DragItemRecyclerView currentList = getCurrentRecyclerView(mTouchX + getScrollX());
@@ -238,7 +275,12 @@ public class BoardView extends HorizontalScrollView implements AutoScroller.Auto
             int oldColumn = getColumnOfList(mCurrentRecyclerView);
             int newColumn = getColumnOfList(currentList);
             long itemId = mCurrentRecyclerView.getDragItemId();
-            Object item = mCurrentRecyclerView.removeDragItemAndEnd();
+            Object item;
+            if (check()) {
+                item = null;
+            } else {
+                item = mCurrentRecyclerView.removeDragItemAndEnd();
+            }
             if (item != null) {
                 mCurrentRecyclerView = currentList;
                 mCurrentRecyclerView.addDragItemAndStart(getListTouchY(mCurrentRecyclerView), item,
@@ -571,9 +613,22 @@ public class BoardView extends HorizontalScrollView implements AutoScroller.Auto
             LinearLayout.LayoutParams.MATCH_PARENT));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setReverseLayout(true);
-        recyclerView.setCanNotDragBelowTopItem(true);
-        recyclerView.setCanNotDropBelowTopItem(true);
+        recyclerView.setCanNotDragBelowTopItem(mCanNotDragBelowTopItem);
+        recyclerView.setCanNotDropBelowTopItem(mCanNotDropBelowTopItem);
+        recyclerView.setDragItemCallback(new DragItemRecyclerView.DragItemCallback() {
+            @Override
+            public boolean canDragItemAtPosition(int dragPosition) {
+                return true;
+            }
 
+            @Override
+            public boolean canDropItemAtPosition(int dropPosition) {
+                if (dropPosition == adapter.getItemCount() - 1) {
+                    return true;
+                }
+                return false;
+            }
+        });
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(hasFixedItemSize);
         recyclerView.setItemAnimator(new DefaultItemAnimator());

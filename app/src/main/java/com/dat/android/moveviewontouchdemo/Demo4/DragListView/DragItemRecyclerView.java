@@ -1,12 +1,12 @@
 /**
  * Copyright 2014 Magnus Woxblom
- * <p>
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
+ * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -242,7 +242,7 @@ public class DragItemRecyclerView extends RecyclerView implements AutoScroller.A
     public void onAutoScrollColumnBy(int columns) {
     }
 
-    private View findChildView(float x, float y) {
+    public View findChildView(float x, float y) {
         final int count = getChildCount();
         if (y <= 0 && count > 0) {
             return getChildAt(0);
@@ -264,8 +264,7 @@ public class DragItemRecyclerView extends RecyclerView implements AutoScroller.A
 
     private boolean shouldChangeItemPosition(int newPos) {
 
-        Log.d("BBBB",
-            "newPos: " + newPos + "   -  mAdapter.getItemCount(): " + mAdapter.getItemCount());
+        //Log.d("BBBB", "newPos: " + newPos + " mHoldChangePosition: " + mHoldChangePosition + " ");
         // Check if drag position is changed and valid and that we are not in a hold position state
         if (mHoldChangePosition
             || mDragItemPosition == NO_POSITION
@@ -274,8 +273,7 @@ public class DragItemRecyclerView extends RecyclerView implements AutoScroller.A
         }
         // If we are not allowed to drag above top or bottom and new pos is 0 or item count then return false
         if ((mCanNotDragAboveTop && newPos == 0) || (mCanNotDragBelowBottom
-            && newPos == mAdapter.getItemCount() - 1) ||
-            (mCanNotDropBelowTopItem && newPos != mAdapter.getItemCount() - 1)) {
+            && newPos == mAdapter.getItemCount() - 1)) {
             return false;
         }
         // Check with callback if we are allowed to drop at this position
@@ -474,8 +472,10 @@ public class DragItemRecyclerView extends RecyclerView implements AutoScroller.A
             // If child is null and child count is not 0 it means that an item was
             // dragged below the last item in the list, then put it after that item
             pos = getChildLayoutPosition(getChildAt(getChildCount() - 1)) + 1;
+            //Log.d("CC", "CC");
         } else {
             pos = getChildLayoutPosition(child);
+            // Log.d("DD", "DD");
         }
 
         // If pos is NO_POSITION it means that the child has not been laid out yet,
@@ -483,6 +483,12 @@ public class DragItemRecyclerView extends RecyclerView implements AutoScroller.A
         if (pos == NO_POSITION) {
             pos = 0;
         }
+
+        /*if (pos < mAdapter.getItemCount() - 1) {
+            return;
+        }*/
+
+        Log.d("pos", "pos: " + pos);
 
         mDragState = DragState.DRAG_STARTED;
         mDragItemId = itemId;
