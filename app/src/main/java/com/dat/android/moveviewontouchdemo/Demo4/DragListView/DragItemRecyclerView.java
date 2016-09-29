@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -67,6 +68,17 @@ public class DragItemRecyclerView extends RecyclerView implements AutoScroller.A
     private boolean mScrollingEnabled = true;
     private boolean mDisableReorderWhenDragging;
     private boolean mDragEnabled = true;
+
+    //flags that allow to drag and drop only top item of each column
+    private boolean mCanNotDragBelowTopItem, mCanNotDropBelowTopItem;
+
+    public void setCanNotDragBelowTopItem(boolean mCanNotDragBelowTopItem) {
+        this.mCanNotDragBelowTopItem = mCanNotDragBelowTopItem;
+    }
+
+    public void setCanNotDropBelowTopItem(boolean mCanNotDropBelowTopItem) {
+        this.mCanNotDropBelowTopItem = mCanNotDropBelowTopItem;
+    }
 
     public DragItemRecyclerView(Context context) {
         super(context);
@@ -251,6 +263,9 @@ public class DragItemRecyclerView extends RecyclerView implements AutoScroller.A
     }
 
     private boolean shouldChangeItemPosition(int newPos) {
+
+        Log.d("BBBB",
+            "newPos: " + newPos + "   -  mAdapter.getItemCount(): " + mAdapter.getItemCount());
         // Check if drag position is changed and valid and that we are not in a hold position state
         if (mHoldChangePosition
             || mDragItemPosition == NO_POSITION
@@ -259,13 +274,15 @@ public class DragItemRecyclerView extends RecyclerView implements AutoScroller.A
         }
         // If we are not allowed to drag above top or bottom and new pos is 0 or item count then return false
         if ((mCanNotDragAboveTop && newPos == 0) || (mCanNotDragBelowBottom
-            && newPos == mAdapter.getItemCount() - 1)) {
+            && newPos == mAdapter.getItemCount() - 1) ||
+            (mCanNotDropBelowTopItem && newPos != mAdapter.getItemCount() - 1)) {
             return false;
         }
         // Check with callback if we are allowed to drop at this position
         if (mDragCallback != null && !mDragCallback.canDropItemAtPosition(newPos)) {
             return false;
         }
+
         return true;
     }
 
@@ -344,25 +361,15 @@ public class DragItemRecyclerView extends RecyclerView implements AutoScroller.A
         }
     }
 
-    int draggablePosition;
-
-    public void setDraggablePosition(int draggablePosition) {
-        this.draggablePosition = draggablePosition;
-    }
-
     boolean startDrag(View itemView, long itemId, float x, float y) {
         int dragItemPosition = mAdapter.getPositionForItemId(itemId);
-        if (!mDragEnabled || (mCanNotDragAboveTop && dragItemPosition == 0) || (
-            mCanNotDragBelowBottom
-                && dragItemPosition == mAdapter.getItemCount() - 1)) {
+        if (!mDragEnabled || (mCanNotDragAboveTop && dragItemPosition == 0) ||
+            (mCanNotDragBelowBottom && dragItemPosition == mAdapter.getItemCount() - 1) ||
+            (mCanNotDragBelowTopItem && dragItemPosition != mAdapter.getItemCount() - 1)) {
             return false;
         }
 
         if (mDragCallback != null && !mDragCallback.canDragItemAtPosition(dragItemPosition)) {
-            return false;
-        }
-
-        if (dragItemPosition != draggablePosition) {
             return false;
         }
 

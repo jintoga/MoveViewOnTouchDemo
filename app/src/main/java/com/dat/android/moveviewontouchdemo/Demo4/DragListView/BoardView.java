@@ -571,6 +571,8 @@ public class BoardView extends HorizontalScrollView implements AutoScroller.Auto
             LinearLayout.LayoutParams.MATCH_PARENT));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setReverseLayout(true);
+        recyclerView.setCanNotDragBelowTopItem(true);
+        recyclerView.setCanNotDropBelowTopItem(true);
 
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(hasFixedItemSize);

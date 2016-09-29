@@ -5,7 +5,6 @@ import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.dat.android.moveviewontouchdemo.Demo4.DragListView.BoardView;
@@ -55,7 +54,7 @@ public class Demo4Activity extends AppCompatActivity {
                     Toast.makeText(boardView.getContext(),
                         "End - column: " + toColumn + " row: " + toRow, Toast.LENGTH_SHORT).show();
                 }*/
-                MyDragItemAdapter adapterToColumn =
+                /*MyDragItemAdapter adapterToColumn =
                     (MyDragItemAdapter) boardView.getAdapter(toColumn);
                 MyDragItemAdapter adapterFromColumn =
                     (MyDragItemAdapter) boardView.getAdapter(fromColumn);
@@ -66,21 +65,14 @@ public class Demo4Activity extends AppCompatActivity {
 
                 DragItemRecyclerView toRecyclerView =
                     (DragItemRecyclerView) boardView.getRecyclerView(toColumn);
-                toRecyclerView.setDraggablePosition(adapterToColumn.getDraggablePosition());
+                toRecyclerView.setDraggablePosition(adapterToColumn.getDraggablePosition());*/
             }
         });
         addColumnList(5);
-        addColumnList(0);
-        addColumnList(0);
-        initDraggablePositions();
+        addColumnList(5);
+        addColumnList(5);
     }
 
-    private void initDraggablePositions() {
-        for (int i = 0; i < mColumns; i++) {
-            ((DragItemRecyclerView) boardView.getRecyclerView(i)).setDraggablePosition(
-                ((MyDragItemAdapter) boardView.getAdapter(i)).getDraggablePosition());
-        }
-    }
 
     private void addColumnList(int addItems) {
         final ArrayList<Pair<Long, String>> mItemArray = new ArrayList<>();
