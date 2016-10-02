@@ -46,11 +46,7 @@ public class MyDragItemAdapter
     public long getItemId(int position) {
         return mItemList.get(position).first;
     }
-
-    public int getDraggablePosition() {
-        return mItemList.size() - 1;
-    }
-
+ 
     public class ViewHolder extends DragItemAdapter.ViewHolder {
         public TextView mText;
 
