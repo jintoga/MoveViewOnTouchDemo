@@ -275,12 +275,7 @@ public class BoardView extends HorizontalScrollView implements AutoScroller.Auto
             int oldColumn = getColumnOfList(mCurrentRecyclerView);
             int newColumn = getColumnOfList(currentList);
             long itemId = mCurrentRecyclerView.getDragItemId();
-            Object item;
-            if (check()) {
-                item = null;
-            } else {
-                item = mCurrentRecyclerView.removeDragItemAndEnd();
-            }
+            Object item = mCurrentRecyclerView.removeDragItemAndEnd();
             if (item != null) {
                 mCurrentRecyclerView = currentList;
                 mCurrentRecyclerView.addDragItemAndStart(getListTouchY(mCurrentRecyclerView), item,

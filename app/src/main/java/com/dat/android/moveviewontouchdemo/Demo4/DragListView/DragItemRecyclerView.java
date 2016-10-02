@@ -24,7 +24,6 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -468,14 +467,13 @@ public class DragItemRecyclerView extends RecyclerView implements AutoScroller.A
     void addDragItemAndStart(float y, Object item, long itemId) {
         View child = findChildView(0, y);
         int pos;
-        if (child == null && getChildCount() > 0) {
+
+        if ((child == null && getChildCount() > 0) || mCanNotDropBelowTopItem) {
             // If child is null and child count is not 0 it means that an item was
             // dragged below the last item in the list, then put it after that item
             pos = getChildLayoutPosition(getChildAt(getChildCount() - 1)) + 1;
-            //Log.d("CC", "CC");
         } else {
             pos = getChildLayoutPosition(child);
-            // Log.d("DD", "DD");
         }
 
         // If pos is NO_POSITION it means that the child has not been laid out yet,
@@ -483,12 +481,6 @@ public class DragItemRecyclerView extends RecyclerView implements AutoScroller.A
         if (pos == NO_POSITION) {
             pos = 0;
         }
-
-        /*if (pos < mAdapter.getItemCount() - 1) {
-            return;
-        }*/
-
-        Log.d("pos", "pos: " + pos);
 
         mDragState = DragState.DRAG_STARTED;
         mDragItemId = itemId;
